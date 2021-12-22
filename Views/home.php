@@ -1,39 +1,38 @@
 <?php
-//エラー表示あり
-ini_set('display_errors' , 1);
-//日本時間にする
-date_default_timezone_get('Asia/Tokyo');
-//URL/ディレクトリ設定
-define('HOME_URL', 'http://localhost/TwitterClone/');
+// エラー表示あり
+ini_set('display_errors', 1);
+// 日本時間にする
+date_default_timezone_set('Asia/Tokyo');
+// URL/ディレクトリ設定
+define('HOME_URL', '/TwitterClone/');
 
-//////////////////////////////////////
+///////////////////////////////////////
 // ツイート一覧
-//////////////////////////////
-// $view_tweets = [   
-//     [
-//             'user_id' => 1,
-//             'user_name' => 'taro',
-//             'user_nickname' => '太朗',
-//             'user_image_name' => 'sample-person.jpg',
-//             'tweet_body' => '今プログラミングをしています。'
-//             'tweet_image_name' => null,
-//             'tweet_created_at' => '2021-03-15 14:00:00',
-//             'like_id' => null,
-//             'like_count' => 0,
-//     ],
-//     [
-//         'user_id' => 2,
-//         'user_name' => 'jiro',
-//         'user_nickname' => '次郎',
-//         'user_image_name' => null,
-//         'tweet_body' => 'コワーキングスペースオープンしました。'
-//         'tweet_image_name' => 'sample-post.jpg',
-//         'tweet_created_at' => '2021-03-14 14:00:00',
-//         'like_id' => 1,
-//         'like_count' => 1,
-//     ],
-// ];
-
+///////////////////////////////////////
+$view_tweets = [
+    [
+        'user_id' => 1,
+        'user_name' => 'taro',
+        'user_nickname' => '太郎',
+        'user_image_name' => 'sample-person.jpg',
+        'tweet_body' => '今プログラミングをしています。',
+        'tweet_image_name' => null,
+        'tweet_created_at' => '2021-03-15 14:00:00',
+        'like_id' => null,
+        'like_count' => 0,
+    ],
+    [
+        'user_id' => 2,
+        'user_name' => 'jiro',
+        'user_nickname' => '次郎',
+        'user_image_name' => null,
+        'tweet_body' => 'コワーキングスペースをオープンしました！',
+        'tweet_image_name' => 'sample-post.jpg',
+        'tweet_created_at' => '2021-03-14 14:00:00',
+        'like_id' => 1,
+        'like_count' => 1,
+    ]
+];
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -70,6 +69,7 @@ define('HOME_URL', 'http://localhost/TwitterClone/');
             </div>
 
             <!--つぶやき投稿エリア-->
+
             <div class="tweet-post">
                 <div class="my-icon">
                     <img src="<?php echo HOME_URL;?>Views/img_uploaded/user/sample-person.jpg" alt="">
@@ -93,7 +93,7 @@ define('HOME_URL', 'http://localhost/TwitterClone/');
             <!--つぶやき一覧エリア-->
         <?php if (empty($view_tweets)) : ?>
             <p class="p-3">ツイートがありません</p>
-        <?php else: ?>
+        <?php else : ?>
             <div class="tweet-list">
                 <div class="tweet">
                     <div class="user">
@@ -141,6 +141,7 @@ define('HOME_URL', 'http://localhost/TwitterClone/');
                     </div>
                 </div>
             </div>
+        <?php endif; ?>
         </div>
     </div>
 </body>
