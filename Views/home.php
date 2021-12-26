@@ -28,11 +28,71 @@ $view_tweets = [
         'user_image_name' => null,
         'tweet_body' => 'コワーキングスペースをオープンしました！',
         'tweet_image_name' => 'sample-post.jpg',
-        'tweet_created_at' => '2021-03-14 14:00:00',
+        'tweet_created_at' => '2021-12-14 14:00:00',
         'like_id' => 1,
         'like_count' => 1,
     ]
 ];
+
+///////////
+//便利な関数
+///////////
+/**
+ * 画像ファイル名から画像のURLを生成する
+ * 
+ * @param string $name 画像ファイル名
+ * @param string $type user | tweet
+ * @return string
+ */
+function buildImagePath(string $name = null, string $type){
+    if ($type === 'user' && !isset($name)){
+        return HOME_URL.'Views/img/icon-default-user.svg';
+    }
+
+    return HOME_URL.'Views/img_uploaded/' . $type . '/' . htmlspecialchars($name);
+
+}
+
+
+
+ /**
+ * 指定したん知事からどれだけ経過したかを取得
+ * 
+ * @param string $datetime　日時
+ * @return void
+ * 
+ * 
+ */
+function convertToDayTimeAgo(string $datetime)
+{
+    $unix = strtotime($datetime);
+    $now = time();
+    $diff_sec = $now - $unix;
+
+    if($diff_sec < 60){
+        $time =$diff_sec;
+        $unit = '秒前';
+    } elseif ($diff_sec < 3600){
+        $time = $diff_sec / 60;
+        $unit ='分前';
+    } elseif ($diff_sec < 86400){
+        $time = $diff_sec / 3600;
+        $unit = '時間前';
+    } elseif ($diff_sec < 2764800){
+        $time =$diff_sec / 86400;
+        $unit = '日前';
+    }    else {
+        
+        if (date('Y') !== date('Y',$unix)){
+            $time = date('Y年n月j日', $unix);
+        } else {
+            $time = date('n月j日', $unix);
+        }
+        return $time;
+    }
+
+    return (int)$time . $unit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -94,54 +154,49 @@ $view_tweets = [
         <?php if (empty($view_tweets)) : ?>
             <p class="p-3">ツイートがありません</p>
         <?php else : ?>
+            
             <div class="tweet-list">
-                <div class="tweet">
-                    <div class="user">
-                        <a href="profile.php?_id=1">
-                            <img src="<?php echo HOME_URL;?>Views/img_uploaded/user/sample-person.jpg" alt="">
-                        </a>
-                    </div>
-                    <div class="content">
-                        <div class="name">
-                            <a href="profile.php?user_id=1">
-                                <div class="nickname">太朗</div>
-                                <span class="user-name">@taro ・23日前</span>
+                <?php foreach($view_tweets as $view_tweet) : ?>
+
+                    <div class="tweet">
+                        <div class="user">
+                            <a href="profile.php?_id=<?php echo htmlspecialchars($view_tweet['user_id']); ?>">
+                                <img src="<?php echo buildImagePath($view_tweet['user_image_name'],'user'); ?>" alt="">
                             </a>
                         </div>
-                        <p>今プログラミングをしています</p>
-                        <div class="icon-list">
-                            <div class="like">
-                                <img src="<?php echo HOME_URL;?>Views/img/icon-heart.svg" alt="">
+                        <div class="content">
+                            <div class="name">
+                                <a href="profile.php?user_id=<?php echo htmlspecialchars($view_tweet['user_id']); ?>">
+                                    <div class="nickname"><?php echo htmlspecialchars($view_tweet['user_nickname']); ?></div>
+                                    <span class="user-name"><?php echo htmlspecialchars($view_tweet['user_name']); ?>・<?php echo convertTodayTimeAgo($view_tweet['tweet_created_at']); ?></span>
+                                </a>
                             </div>
-                            <div class="like-count">0</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tweet">
-                    <div class="user">
-                        <a href="profile.php?_id=2">
-                            <img src="<?php echo HOME_URL;?>Views/img/icon-default-user.svg" alt="">
-                        </a>
-                    </div>
-                    <div class="content">
-                        <div class="name">
-                            <a href="profile.php?user_id=2">
-                                <div class="nickname">次郎</div>
-                                <span class="user-name">@jiro ・24日前</span>
-                            </a>
-                        </div>
-                        <p>コワーキングスペースをオープンしました！</p>
-                        <img src="<?php echo HOME_URL;?>Views/img_uploaded/tweet/sample-post.jpg" alt="" class="post-image">
-                        <div class="icon-list">
-                            <div class="like">
-                                <img src="<?php echo HOME_URL;?>Views/img/icon-heart-twitterblue.svg" alt="">
+                            <p><?php echo $view_tweet['tweet_body'] ?></p>
+
+                            <?php if(isset($view_tweet['tweet_image_name'])): ?>
+                                <img src="<?php echo BuildImagePath($view_tweet['tweet_image_name'], 'tweet'); ?>" alt="" class="post-image">
+                            <?php endif; ?>
+
+                                <div class="icon-list">
+                                <div class="like">
+                                    <?php
+                                    if (isset($view_tweet['like_id'])){
+                                        //いいね！している場合、青のハートを表示
+                                        echo '<img src="'.HOME_URL.'Views/img/icon-heart-twitterblue.svg" alt="">';
+                                    } else {
+                                        //いいね！していない場合、グレーのハートを表示
+                                        echo '<img src="'.HOME_URL.'Views/img/icon-heart.svg" alt="">';
+                                    }
+                                    ?>
+                                </div>
+                                <div class="like-count"><?php echo htmlspecialchars($view_tweet['like_count']); ?></div>
                             </div>
-                            <div class="like-count">0</div>
                         </div>
                     </div>
-                </div>
+                <?php endforeach;?>
+
             </div>
-        <?php endif; ?>
+        <?php endif;?>
         </div>
     </div>
 </body>
