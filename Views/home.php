@@ -56,7 +56,7 @@ function buildImagePath(string $name = null, string $type){
 
 
  /**
- * 指定したん知事からどれだけ経過したかを取得
+ * 指定した日時からどれだけ経過したかを取得
  * 
  * @param string $datetime　日時
  * @return void
